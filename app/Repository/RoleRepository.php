@@ -3,7 +3,8 @@
 namespace  App\Repository;
 
 use App\Models\Role;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 class RoleRepository {
     /**
      * Display a listing of the resource.
@@ -36,21 +37,38 @@ class RoleRepository {
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store($request)
     {
-        $role = new Role();
-        $role->name = $request->input('name');
-        $role->permission = $request->input('permission');
-        if ($role->save()) {
+        $validators = Validator::make($request->all(),
+        [
+            'name'         => 'required|unique:roles,name',
+            'permission'   => 'required',
+        ]);
+        if ($validators->fails()) {
             return [
-                'status'    => 'success',
-                'message'   => "{$role->name} telah ditambahkan."
+                'status'   => 'fail',
+                'message'   => $validators->messages()
             ];
-        } else {
-            return [
-                'sucess' => 'fail',
-                'message'=> "Gagal menambah role baru."
-            ];
+        } 
+        else {
+
+            $role = Role::create(
+                [
+                    'name'          => $request['name'],
+                    'permission'    => $request['permission']
+                ]
+            );
+            if ($role) {
+                return [
+                    'status'    => 'success',
+                    'message'   => "{$role->name} telah ditambahkan."
+                ];
+            } else {
+                return [
+                    'sucess' => 'fail',
+                    'message'=> "Gagal menambah role baru."
+                ];
+            }
         }
         
     }
@@ -60,6 +78,7 @@ class RoleRepository {
      */
     public function show(int $id)
     {
+        
         $role = Role::find($id);
         return [
             'name' => $role->name,
@@ -110,7 +129,6 @@ class RoleRepository {
         if ($role) {
             $name   = $role->name;
             $role->destroy();
-            $status = 'success';
             return [
                 'status'    => 'success',
                 'message'   => "Role {$name} telah dihapus."

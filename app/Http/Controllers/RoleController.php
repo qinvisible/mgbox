@@ -24,7 +24,7 @@ class RoleController extends Controller
      */
     public function create(Request $request)
     {
-        return  $this->RoleRepo->create($request);
+        
     }
 
     /**
@@ -32,7 +32,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return  response($this->RoleRepo->store($request));
     }
 
     /**

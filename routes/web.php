@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -34,7 +36,23 @@ Route::prefix('user')->group(function(){
     Route::get('', [UserController::class, 'index']);
     Route::post('', [UserController::class, 'store']);
     Route::put('{id}', [UserController::class, 'update']);
-    Route::put('{id}/role', [UserController::class, 'updateRole']);
     Route::get('/{id}', [UserController::class, 'show']);
     Route::delete('/{id}', [UserController::class, 'destroy']);
+});
+
+Route::prefix('product')->group(function(){
+    Route::get('', [ProductController::class, 'index']);
+    Route::post('', [ProductController::class, 'store']);
+    Route::put('{id}', [ProductController::class, 'update']);
+    Route::get('/{id}', [ProductController::class, 'show']);
+    Route::delete('/{id}', [ProductController::class, 'destroy']);
+    Route::post('/add-category', [ProductController::class, 'addCategory']);
+});
+
+Route::prefix('category')->group(function(){
+    Route::get('', [CategoryController::class, 'index']);
+    Route::post('', [CategoryController::class, 'store']);
+    Route::put('{id}', [CategoryController::class, 'update']);
+    Route::get('/{id}', [CategoryController::class, 'show']);
+    Route::delete('/{id}', [CategoryController::class, 'destroy']);
 });

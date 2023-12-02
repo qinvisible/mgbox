@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Repository\ProductRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class ProductController extends Controller
 {
+    private $productRepo;
+    public function __construct() {
+        $this->productRepo = new ProductRepository();
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return response($this->productRepo->index());
     }
 
     /**
@@ -27,7 +33,8 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $product = $this->productRepo->store($request);
+        return response($product);
     }
 
     /**
@@ -35,7 +42,7 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return response($this->productRepo->show($id));
     }
 
     /**
@@ -57,8 +64,11 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        return response($this->productRepo->destroy($id));
+    }
+    public function addCategory(Request $request) {
+        return $this->productRepo->addCategory(($request));
     }
 }
