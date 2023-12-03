@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -55,4 +56,13 @@ Route::prefix('category')->group(function(){
     Route::put('{id}', [CategoryController::class, 'update']);
     Route::get('/{id}', [CategoryController::class, 'show']);
     Route::delete('/{id}', [CategoryController::class, 'destroy']);
+});
+
+
+Route::prefix('customer')->group(function(){
+    Route::get('', [CustomerController::class, 'index']);
+    Route::post('', [CustomerController::class, 'store']);
+    Route::put('{id}', [CustomerController::class, 'update']);
+    Route::get('/{id}', [CustomerController::class, 'show']);
+    Route::delete('/{id}', [CustomerController::class, 'destroy']);
 });
