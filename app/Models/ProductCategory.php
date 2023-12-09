@@ -13,8 +13,8 @@ class ProductCategory extends Model
     protected $table = 'product_categories';
     public $incrementing = false;
     protected $fillable = ['product_id', 'category_id'];
-    public function categoryProduct() {
-        return $this->belongsToMany(Product::class, 'product_id', 'id');
+    public function productsItem() {
+        return $this->belongsToMany(Product::class, 'product_id');
     }
     public function productCategory() {
         return $this->belongsTo(Category::class, 'category_id');

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -65,4 +66,14 @@ Route::prefix('customer')->group(function(){
     Route::put('{id}', [CustomerController::class, 'update']);
     Route::get('/{id}', [CustomerController::class, 'show']);
     Route::delete('/{id}', [CustomerController::class, 'destroy']);
+});
+
+Route::prefix('order')->group(function(){
+    Route::get('', [OrderController::class, 'index']);
+    Route::get('{id}/order-item', [OrderController::class, 'getOrderItems']);
+    Route::post('', [OrderController::class, 'store']);
+    Route::post('/{id}/add-order', [OrderController::class, 'addOrder']);
+    Route::put('{id}', [OrderController::class, 'update']);
+    Route::get('/{id}', [OrderController::class, 'show']);
+    Route::delete('/{id}', [OrderController::class, 'destroy']);
 });

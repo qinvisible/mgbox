@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,16 +17,42 @@ class CategoryRepository
      */
     public function index()
     {
-        $categories = Category::all()->toArray();
-        $data = array_map( function($cat){
-            return  [
-                'name' => $cat['name'],
-                'desc' => $cat['desc']
-            ];
-        }, $categories );
-                
+        $categories = Category::all();
+        $categoriesData = [];
+        foreach ($categories as $cat) {
+            $ids = array_map(function($i) {
+                return $i['product_id'];
+            },$cat->products->toArray());
+            try {
+                $products = Product::whereIn('id', $ids)->get();
+            } catch (\Throwable $th) {
+                return $th;
+            }
+            $products = array_map(function($product){
+                return [
+                    "name" => $product["name"],
+                    "desc" => $product["desc"],
+                    "price" => $product["price"],
+                    "width" => $product["width"],
+                    "height" => $product["height"],
+                    "length" => $product["length"],
+                    "thickness" => $product["thickness"],
+                    "location" => $product["location"],
+                    "amount" => $product["amount"],
+                ];
+            }, $products->toArray());
+            $categoriesData[] = [
+                [
+                    'name' => $cat['name'],
+                    'desc' => $cat['desc'],
+                    'id'   => $cat['id'],
+                    'products' => $products
+                ]
+                ];
+        }
+       
         return [
-            'data' => $data
+            'data' => $categoriesData
         ];
     }
 
@@ -85,21 +112,31 @@ class CategoryRepository
      */
     public function show($id)
     {
-        $category = Category::find($id);
-        if ($category) {
+        try {
+            $category   = Category::with('products')->find($id);
+            $productIds    = array_map(function($cat){
+                return $cat['product_id'];
+            }, $category->products->toArray());
+            $productRepo = new ProductRepository();
+            $products = $productRepo->getProducts($productIds);
             return [
                 'status' => 'success',
                 'data'  => [
-                    'name' => $category['name'],
-                    'desc' => $category['desc']
+                    'name'  => $category['name'],
+                    'desc'  => $category['desc'],
+                    'id'    => $category['id'],
+                    'products'  => $products
                 ]
             ];
-        } else {
+        } catch (\Throwable $th) {
+            return $th;
             return [
                 'status' => 'fail',
                 'message'=> 'Kategori produk tidak ditemukan'
             ];
         }
+        
+        
     }
 
     /**

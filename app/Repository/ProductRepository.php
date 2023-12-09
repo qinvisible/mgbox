@@ -13,29 +13,41 @@ class ProductRepository {
      */
     public function index()
     {
-        $products = Product::all();
+        return [
+            'data' => $this->getProducts()
+        ];
+    }
 
-        foreach ($products as $key => $prod) {
-            $cat = Category::find($prod->productCategory['category_id']);
-            return [
+    public function getProducts($ids = null) {
+
+        $products = $ids ? Product::find($ids) :Product::all();
+        $productdata = [];
+        foreach ($products as  $prod) {
+            $cat = null;
+            try {
+                $cat = Category::findOrFail($prod->productCategory->category_id);
+            } catch (\Throwable $th) {
+                $cat = null;
+            }
+            $productdata [] =  [
+                'id' => $prod['id'],
                 'name' => $prod['name'],
-                'description' => $prod['description'],
+                'desc' => $prod['desc'],
                 'price' => $prod['price'],
                 'width' => $prod['width'],
                 'height' => $prod['height'],
                 'length' => $prod['length'],
                 'thickness' => $prod['thickness'],
                 'location' => $prod['location'],
+                'amount'    => $prod['amount'],
                 'category' => [
-                    'name' => $cat['name'],
-                    'desc' => $cat['desc']
+                    'name' => isset($cat['name'])?$cat['name']:null,
+                    'desc' => isset($cat['desc'])?$cat['desc']:null
                 ]
             ];
+            
         }
-        
-        return [
-            'data' => $products
-        ];
+        return $productdata;
     }
 
     /**
@@ -54,13 +66,14 @@ class ProductRepository {
         $validator = Validator::make($request->all(),
             [
                 "name"          =>  "required",
-                "description"   =>  "required",
+                "desc"          =>  "required",
                 "price"         =>  "required|numeric",
                 "width"         =>  "required|numeric",
                 "height"        =>  "required|numeric",
                 "length"        =>  "required|numeric",
                 "thickness"     =>  "required|numeric",
                 "location"      =>  "required",
+                'category_id'   =>  "required"
             ]
         );
         if ($validator->fails()) {
@@ -72,15 +85,19 @@ class ProductRepository {
             try {
                 $product = Product::create([
                     "name"          => $request['name'],
-                    "description"   => $request['description'],
+                    "desc"          => $request['desc'],
                     "price"         => $request['price'],
                     "width"         => $request['width'],
                     "height"        => $request['height'],
                     "length"        => $request['length'],
                     "thickness"     => $request['thickness'],
+                    "amount"        => $request['amount'],
                     "user_id"       => $request['user_id'],
                     "location"      => $request['location']
                 ]);
+                if ($product) {
+                    ProductCategory::create(['category_id' => $request['category_id'], 'product_id' => $product->id]);
+                }
             } catch (\Throwable $th) {
                 return $th;
             }
@@ -117,7 +134,8 @@ class ProductRepository {
                 'status'    => 'success',
                 'data'      => [
                     'name' => $product['name'],
-                    'description' => $product['description'],
+                    
+                    'desc' => $product['desc'],
                     'price' => $product['price'],
                     'width' => $product['width'],
                     'height' => $product['height'],
@@ -146,8 +164,36 @@ class ProductRepository {
      */
     public function update($request, $id)
     {
-        //
+        $action = $request['action'] ?? null;
+        $product = Product::findOrFail($id);
+        if (($action == 'addStock')) {
+            $product->amount = $product->amount + $request['amount'];
+        } elseif (($action == 'descStock')) {
+            if ($request['amount'] > $product->amount) {
+                return [
+                    'status' => 'fail',
+                    'message'=> "Jumlah produk kurang, jumlah product hanya {$product->amount}"
+                ];
+            }
+            $product->amount = $product->amount - $request['amount'];
+        }
+        else {
+            try {
+                $product->update($request->only(['name','desc','price','width','height','length','thickness']));
+                return [
+                    'status' => 'success',
+                    'message'=> "Produk {$request['name']} sudah diupdate."
+                ];
+            } catch (\Throwable $th) {
+                return [
+                    'status' => 'fail',
+                    'message'=> "Produk gagal diupdate"
+                ];
+            }
+        }
     }
+
+    
 
     /**
      * Remove the specified resource from storage.

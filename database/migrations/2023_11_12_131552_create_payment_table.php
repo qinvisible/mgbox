@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('order_id')->nullable()->default();
             $table->decimal('amount', 0, 0)->nullable()->default(0);
-            $table->softDeletes();
+            $table->softDeletes('deleted_at', 1);
             $table->timestamps();
         });
     }

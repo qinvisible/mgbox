@@ -21,7 +21,11 @@ return new class extends Migration
             $table->decimal('height', 0, 0)->nullable()->default(0);
             $table->decimal('length', 0, 0)->nullable()->default(0);
             $table->decimal('thickness', 0, 0)->nullable()->default(0);
-            $table->softDeletes();
+            $table->integer('item_number')->default(0);
+            $table->integer('item_done')->default(0);
+            $table->integer('item_remaining')->default(0);
+            $table->timestamp('target_date');
+            $table->softDeletes('deleted_at', 1);
             $table->timestamps();
         });
     }

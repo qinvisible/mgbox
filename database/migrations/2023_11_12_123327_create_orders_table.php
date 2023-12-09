@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('customer_id')->reference('customers')->on('id');
-            $table->enum('status', ['received', 'pending', 'process', 'ready_to_send', 'on_deliver', 'delivered', 'cancelled', 'done' ])->nullable();
+            $table->enum('status', ['received', 'pending', 'process', 'ready_to_send', 'on_deliver', 'delivered', 'cancelled', 'done' ])->default('received');
             $table->text('note')->nullable();
             $table->decimal('total_payment', 0, 0)->nullable()->default(0);
             $table->decimal('remaining_payment', 0, 0)->nullable()->default(0);
             $table->decimal('paid', 0, 0)->nullable()->default(0);
-            $table->softDeletes();
+            $table->timestamp('payment_deadline');
+            $table->softDeletes('deleted_at', 1);
             $table->timestamps();
         });
     }

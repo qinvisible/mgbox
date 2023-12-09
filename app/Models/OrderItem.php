@@ -9,6 +9,19 @@ class OrderItem extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'width',
+        'height',
+        'length',
+        'thickness',
+        'location', 
+        'order_id',
+        'product_id',
+        'target_date'
+    ];
     /**
      * Get the user that owns the OrderItem
      *
