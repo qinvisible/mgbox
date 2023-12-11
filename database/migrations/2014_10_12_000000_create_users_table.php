@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->integer('role_id')->reference('roles')->on('id')->onDelete('cascade');
+            $table->integer('role_id')->reference('roles')->on('id')->onDelete('restrict');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->softDeletes('deleted_at', 1);
+            $table->softDeletes('deleted_at');
             $table->timestamps();
         });
     }
