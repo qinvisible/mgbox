@@ -67,6 +67,6 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        return $this->userRepo->destroy($id);
     }
 }

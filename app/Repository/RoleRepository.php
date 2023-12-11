@@ -109,12 +109,18 @@ class RoleRepository {
         $name   = '';
         if ($role) {
             $name   = $role->name;
-            $role->destroy();
-            $status = 'success';
-            return [
-                'status'    => 'success',
-                'message'   => "Role {$name} telah dihapus."
-            ];
+            try {
+                $role->destroy();
+                return [
+                    'status'    => 'success',
+                    'message'   => "Role {$name} telah dihapus."
+                ];
+            } catch (\Throwable $th) {
+                return [
+                    'message' => "Gagal menghapus {$name} aksess, ada pengguna yang menggunakan akses ini.",
+                    'status'    => 'fail',
+                ];
+            }
         }
         else {
             return [

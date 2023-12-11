@@ -112,10 +112,10 @@ class UserRepository
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified user from storage.
      */
-    public function destroy(string $id)
+    public function destroy( $id)
     {
-        //
+        return User::destroy($id);
     }
 }
