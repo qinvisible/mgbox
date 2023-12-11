@@ -1,8 +1,14 @@
 import daisyui from "daisyui"
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-    plugins: [require("@tailwindcss/typography"), require("daisyui")],
-    daisyui: {
-        themes: ["cupcake", "dark", "cmyk"],
+    content: [
+      "./resources/**/*.blade.php",
+      "./resources/**/*.js",
+      "./resources/**/*.vue",
+    ],
+    theme: {
+      extend: {},
     },
-}
+    plugins: [daisyui],
+  }
