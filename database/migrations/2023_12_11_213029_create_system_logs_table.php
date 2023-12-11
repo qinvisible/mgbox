@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment', function (Blueprint $table) {
+        Schema::create('system_logs', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('order_id')->nullable()->default();
-            $table->decimal('amount', 0, 0)->nullable()->default(0);
-            $table->softDeletes('deleted_at', 1);
+            $table->bigInteger('user_id')->reference('users')->on('id');
+            $table->string('user_name')->default(null);
+            $table->json('old_value')->default(null);
+            $table->json('new_value')->default(null);
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payment');
+        Schema::dropIfExists('system_logs');
     }
 };
