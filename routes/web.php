@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Login');
 });
 
 Route::prefix('role')->group(function(){
