@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('item_done')->default(0);
             $table->integer('item_remaining')->default(0);
             $table->timestamp('target_date');
-            $table->softDeletes('deleted_at', 1);
+            $table->softDeletes('deleted_at');
             $table->timestamps();
         });
     }

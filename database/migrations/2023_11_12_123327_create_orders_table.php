@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('remaining_payment', 0, 0)->nullable()->default(0);
             $table->decimal('paid', 0, 0)->nullable()->default(0);
             $table->timestamp('payment_deadline');
-            $table->softDeletes('deleted_at', 1);
+            $table->softDeletes('deleted_at');
             $table->timestamps();
         });
     }
