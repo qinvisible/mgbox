@@ -69,18 +69,20 @@ class OrderRepository {
                 'message'=> $validator->messages()
             ];
         }
-            $newOrder = Order::create(
-                $request->only(
-                    ['customer_id',
-                    'note',
-                    'total_payment',
-                    'remaining_payment',
-                    'paid', 
-                    'payment_deadline'
-                ]));
-            if ($newOrder) {
-                return $this->orderItemRepo->addItem($request, $newOrder['id']);
-            }
+        $newOrder = Order::create(
+            $request->only(
+                ['customer_id',
+                'note',
+                'total_payment',
+                'remaining_payment',
+                'paid', 
+                'payment_deadline'
+            ])
+        );
+        
+        if ($newOrder) {
+            return $this->orderItemRepo->addItem($request->all(), $newOrder['id']);
+        }
         
     }
     public function addOderItems($product_id,  $order_id, $target_date)

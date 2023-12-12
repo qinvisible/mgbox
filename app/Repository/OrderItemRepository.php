@@ -10,7 +10,7 @@ use Nette\Utils\Arrays;
 
 class OrderItemRepository {
     public function addItem($request, $order_id) {
-        $validator  = Validator::make($request->all(), ['target_date' => 'required']);
+        $validator  = Validator::make($request, ['target_date' => 'required']);
         if ($validator->fails()) {
             return [
                 'status' => 'fail',
@@ -18,8 +18,12 @@ class OrderItemRepository {
             ];
         }
         $product    = Product::findOrFail($request['product_id']);
+        
         $order      = Order::findOrFail($order_id);
-        $productReady  = OrderItem::findOrFail(['product_id' => $request['product_id']])->first();
+        $productReady  = OrderItem::where([
+                'product_id' => $request['product_id']
+            ]
+        )->first();
         $dataToSave = [
             'product_id'        => $request['product_id'],
             'order_id'          => $order_id,
@@ -30,7 +34,7 @@ class OrderItemRepository {
             'length'            => $product['length'],
             'thickness'         => $product['thickness'],
             'item_number'       => $request['item_number'],
-            'item_done'         => $request['item_done'],
+            'item_done'         => $request['item_done']?? 0,
             'item_remaining'    => $request['item_remaining'],
             'target_date'       => $request['target_date'],
         ];
