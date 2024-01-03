@@ -12,4 +12,16 @@ class Role extends Model
         'name', 
         'permission'
     ];
+    public static $PERMISSION_DATA = [
+        'Menambah Order',
+        'Update Order',
+        'Membatalkan Order',
+        'Menambah Produk',
+        'Update Produk',
+        'Hapus Produk',
+        'Update Pembayaran',
+        'Update Status Order',
+        'Menambahkan Customer',
+        'Update Customer',
+    ];
 }

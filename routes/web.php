@@ -27,11 +27,12 @@ Route::get('/', function () {
 });
 
 Route::prefix('role')->group(function(){
-    Route::get('', [RoleController::class, 'index']);
-    Route::post('', [RoleController::class, 'store']);
-    Route::put('/{id}', [RoleController::class, 'update']);
-    Route::get('/{id}', [RoleController::class, 'show']);
-    Route::delete('/{id}', [RoleController::class, 'destroy']);
+    Route::get('', [RoleController::class, 'index'])->name('role.index');;
+    Route::put('/{id}', [RoleController::class, 'update'])->name('role.update');
+    Route::get('create', [RoleController::class, 'create'])->name('role.create');
+    Route::post('', [RoleController::class, 'store'])->name('role.store');
+    Route::get('/{id}', [RoleController::class, 'edit'])->name('role.edit');
+    Route::delete('/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
 
 });
 

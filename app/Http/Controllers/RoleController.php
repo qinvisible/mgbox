@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Repository\RoleRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class RoleController extends Controller
 {
@@ -16,7 +19,9 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return  $this->RoleRepo->index();
+        return  Inertia::render('Role/Index', [
+            'roles' => $this->RoleRepo->index()
+        ]);
     }
 
     /**
@@ -24,7 +29,14 @@ class RoleController extends Controller
      */
     public function create(Request $request)
     {
-        
+        Inertia::share('flash', session('flash', false));
+        $data = $this->RoleRepo->create($request);
+        return Inertia::render('Role/Form', [
+            'role'              => $data['role'],
+            'permission_data'   => $data['permission_data'],
+            
+        ]);
+
     }
 
     /**
@@ -32,7 +44,18 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        return  response($this->RoleRepo->store($request));
+        $validator = Validator ::make(
+            $request->all(),
+            [
+                'name'         => 'required|unique:roles,name',
+                'permission'   => 'required',
+            ]
+        );
+        if ($validator->fails()) {
+            return redirect(route('role.create'))->withErrors($validator->messages())->withInput();
+        }
+        $role =$this->RoleRepo->store($request);
+        return redirect(route('role.index'))->withFlash($role['message']);
     }
 
     /**
@@ -46,16 +69,34 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id, Request $request)
-    {
+    public function edit(string $id)
+    {   
+        $data = $this->RoleRepo->edit($id);
+        Inertia::share('flash', session('flash', false));
+        return Inertia::render('Role/Form', [
+            'role'              => $data['role'],
+            'permission_data'   => $data['permission_data'],
+        ]);
     }
     
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, string $id)
     {
-        return response($this->RoleRepo->update($request, $id),200);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'         => 'required',
+                'permission'   => 'required',
+                
+            ]
+        );
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
+        $role = $this->RoleRepo->update($request, $id);
+        return redirect(route('role.edit',['id'=> $id]))->withFlash($role['message'])->withInput();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace  App\Repository;
 
 use App\Models\Role;
 use Illuminate\Support\Facades\Validator;
+use Request;
 
 class RoleRepository {
     /**
@@ -11,7 +12,7 @@ class RoleRepository {
      */
     public function index()
     {
-        $roles = Role::all();
+        $roles = Role::orderBy('created_at', 'desc')->get();
         $roledata = [];
         if (!empty($roles)) {
             foreach ($roles as $key => $role) {
@@ -29,9 +30,18 @@ class RoleRepository {
     /**
      * Show the form for creating a new resource.
      */
-    public function create($request)
+    public function create($request, $validators = null)
     {
-        
+        $name           = $request['name'] ?? '';
+        $permission     = $request['permission'] ?? [];
+        return [
+            'role' => [
+                'name' => $name,
+                'permission' => $permission
+            ],
+            'permission_data'   => Role::$PERMISSION_DATA,
+            'validators'        => $validators
+        ];
     }
 
     /**
@@ -39,38 +49,15 @@ class RoleRepository {
      */
     public function store($request)
     {
-        $validators = Validator::make($request->all(),
-        [
-            'name'         => 'required|unique:roles,name',
-            'permission'   => 'required',
-        ]);
-        if ($validators->fails()) {
-            return [
-                'status'   => 'fail',
-                'message'   => $validators->messages()
-            ];
-        } 
-        else {
-
-            $role = Role::create(
-                [
-                    'name'          => $request['name'],
-                    'permission'    => $request['permission']
-                ]
-            );
-            if ($role) {
-                return [
-                    'status'    => 'success',
-                    'message'   => "{$role->name} telah ditambahkan."
-                ];
-            } else {
-                return [
-                    'sucess' => 'fail',
-                    'message'=> "Gagal menambah role baru."
-                ];
-            }
-        }
-        
+        $newRole = [
+            'name' => $request['name'],
+            'permission' => implode( ',', $request['permission'])
+        ];
+        $role = Role::create($newRole);
+        return [
+            'data' => $role,
+            'message' => "{$role->name} behasil di tambahkan."
+        ];
     }
 
     /**
@@ -82,16 +69,27 @@ class RoleRepository {
         $role = Role::find($id);
         return [
             'name' => $role->name,
-            'permission' => explode(',', $role->permission)
+            'permission' => explode(', ', $role->permission)
         ];
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id, $request)
+    public function edit($id)
     {
         
+        $role = Role::find($id);
+        $roleData = [
+            'role'=> [
+                'id'    => $role->id, 
+                'name'  => $role->name,
+                'permission' => explode(',', $role->permission),
+
+            ],
+            'permission_data' => Role::$PERMISSION_DATA,
+        ];
+        return $roleData;
     }
 
     /**
@@ -99,27 +97,24 @@ class RoleRepository {
      */
     public function update($request, $id)
     {
-        if (!$request) {
-            return [
-                'status'    => 'fail',
-                'message'   => "Tidak ada perubanan."
-            ];
-        }
         $role = Role::findOrFail($id);
-        if ($role) {    
-            $role->update($request->toArray());
-            $role->save();
-            return [
-                'status'    => 'success',
-                'Message'   => "Role {$role->name} diperbaharui"
-            ];
-        }
-        else {
-            return [
-                'status'    => 'fail',
-                'message'   => "Tidak ada role"
-            ];
-        }
+        $req        = $request->all();
+        $role->name = $req['name'];
+        $role->permission = "";
+        $role->permission = join(',', $req['permission']);
+        $role->save();
+        return [
+            'status'    => 'success',
+            'message'   => "Suksess, Role {$role->name} telah diperbaharui",
+            'data'      => [
+                'id'    => $role->id, 
+                'name'  => $role->name,
+                'permission' => explode(',', $role->permission),
+                
+            ],
+            'permission_data' => Role::$PERMISSION_DATA,
+        ];
+    
         
     }
     public function destroy(string $id)

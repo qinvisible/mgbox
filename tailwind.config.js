@@ -7,8 +7,8 @@ module.exports = {
       "./resources/**/*.js",
       "./resources/**/*.vue",
     ],
-    theme: {
-      extend: {},
+    daisyui: {
+        themes: ["light", "dark", "cupcake"],
     },
     plugins: [daisyui],
   }
