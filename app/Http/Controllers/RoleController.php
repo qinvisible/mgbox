@@ -84,11 +84,12 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $role = $this->RoleRepo->show($id);
         $validator = Validator::make(
             $request->all(),
             [
-                'name'         => 'required',
-                'permission'   => 'required',
+                'name'         => 'required|unique:roles,name,'.$role['data']->id,
+                'permission'   => 'required' 
                 
             ]
         );

@@ -68,7 +68,7 @@ class RoleRepository {
         
         $role = Role::find($id);
         return [
-            'name' => $role->name,
+            'data' => $role,
             'permission' => explode(', ', $role->permission)
         ];
     }
@@ -105,7 +105,7 @@ class RoleRepository {
         $role->save();
         return [
             'status'    => 'success',
-            'message'   => "Suksess, Role {$role->name} telah diperbaharui",
+            'message'   => "Suksess, User Aksess telah diperbaharui",
             'data'      => [
                 'id'    => $role->id, 
                 'name'  => $role->name,
