@@ -44,7 +44,7 @@
 </template>
 <script setup>
 import { defineProps } from 'vue';
-import DeleteModal from '../../Shared/DeleteModal.vue'
+import DeleteModal from '../../Components/DeleteModal.vue'
 const props = defineProps({
     roles: Array,
     message: String,

@@ -16,7 +16,7 @@
 <script setup>
 import { defineProps } from 'vue';
 import { router } from "@inertiajs/vue3"
-Dialog
+
 const props = defineProps({
     role: Object
 })
