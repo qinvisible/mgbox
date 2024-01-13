@@ -37,11 +37,12 @@ Route::prefix('role')->group(function(){
 });
 
 Route::prefix('user')->group(function(){
-    Route::get('', [UserController::class, 'index']);
-    Route::post('', [UserController::class, 'store']);
-    Route::put('{id}', [UserController::class, 'update']);
-    Route::get('/{id}', [UserController::class, 'show']);
-    Route::delete('/{id}', [UserController::class, 'destroy']);
+    Route::get('', [UserController::class, 'index'])->name('user.index');
+    Route::get('/create', [UserController::class, 'create'])->name('user.create');
+    Route::post('', [UserController::class, 'store'])->name('user.store');
+    Route::put('{id}', [UserController::class, 'update'])->name('user.update');
+    Route::get('/{id}', [UserController::class, 'show'])->name('user.show');
+    Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 });
 
 Route::prefix('product')->group(function(){

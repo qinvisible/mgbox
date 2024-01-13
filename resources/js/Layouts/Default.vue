@@ -16,6 +16,7 @@ import { Link } from '@inertiajs/vue3'
                 <ul class="menu p-4 w-48 min-h-full bg-base-200 text-base-content">
                     <li><Link href="/">Home</Link></li>
                     <li><Link href="/role">Role</Link></li>
+                    <li><Link href="/user">Pengguna</Link></li>
                 </ul>
             </div>
         </div>

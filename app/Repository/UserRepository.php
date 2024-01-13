@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Validator;
 
 class UserRepository
 {
+    private $roleRepo;
     public function __construct() {
         
+        $this->roleRepo = new RoleRepository();
     }
 
     /**
@@ -16,8 +18,9 @@ class UserRepository
      */
     public function index()
     {
-        $userq = User::all();
-        $users = [];
+        $userq  = User::all();
+        $users  = [];
+        $roles  = $this->roleRepo->index();
         foreach ($userq as $key => $user) {
             $Urole = $user->role;
             $role = [
@@ -29,7 +32,10 @@ class UserRepository
                 'role' => $role
             ]);
         }
-        return $users;
+        return [
+            'data' => $users,
+            'roles'=> $roles
+        ];
     }
 
     /**
@@ -37,7 +43,12 @@ class UserRepository
      */
     public function create($request)
     {
-        
+        $roles  = $this->roleRepo->index();
+        $users  = [];
+        return [
+            'user' => $users,
+            'roles' => $roles
+        ];
     }
 
     /**
@@ -67,8 +78,8 @@ class UserRepository
                 'password'  => bcrypt($request['password'])
             ]);
             return [
-                'status'    => 'success',
-                'message'   => "User {$user->name} created."
+                'data'    => $user,
+                'message'   => "User {$user->name} berhasil ditambahkan."
             ];
         }
         

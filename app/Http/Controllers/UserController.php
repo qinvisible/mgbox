@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Repository\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -16,7 +18,10 @@ class UserController extends Controller
     }
     public function index()
     {
-        return $this->userRepo->index();
+        $users = $this->userRepo->index();
+        return Inertia::render('User/Index', [
+            'user' => $users
+        ]);
     }
 
     /**
@@ -24,6 +29,12 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
+        // Inertia::share('flash', session('flash', false));
+        $data = $this->userRepo->create($request);
+        return Inertia::render('User/Form', [
+            'user'  => $data['user'],
+            'roles'  => $data['roles']
+        ]);
     }
     
     /**
@@ -31,7 +42,26 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->userRepo->store($request);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'      => 'required',
+                'email'     => 'required|unique:users,email',
+                'role_id'   => 'required',
+                'password'  => 'required'
+            ]
+        );
+        if ($validator->fails()) {
+            return [
+                'status'   => 'fail',
+                'message'   => $validator->messages()
+            ];
+            if ($validator->fails()) {
+                return redirect(route('uz.create'))->withErrors($validator->messages())->withInput();
+            }
+        }
+        $data  = $this->userRepo->store($request);
+       
     }
 
     /**
