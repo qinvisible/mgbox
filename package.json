@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^1.0.14",
-        "vue": "^3.3.11"
+        "vue": "^3.3.11",
+        "vue3-perfect-scrollbar": "^1.6.1"
     }
 }

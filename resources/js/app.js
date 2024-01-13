@@ -1,6 +1,8 @@
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 import DefaultLayout from '@/Layouts/Default.vue'
+import PerfectScrollbar from 'vue3-perfect-scrollbar'
+import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'
 
 createInertiaApp({
   resolve: name => {
@@ -14,6 +16,9 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(PerfectScrollbar, {
+        watchOptions: true,
+      })
       .mount(el)
   },
 })

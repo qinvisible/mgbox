@@ -123,7 +123,7 @@ class RoleRepository {
         $name   = '';
         if ($role) {
             $name   = $role->name;
-            $role->destroy();
+            $role->destroy($id);
             return [
                 'status'    => 'success',
                 'message'   => "Role {$name} telah dihapus."

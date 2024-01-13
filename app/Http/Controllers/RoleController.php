@@ -105,6 +105,8 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        return $this->RoleRepo->destroy($id);
+        $this->RoleRepo->destroy($id);
+        return redirect(route('role.index'))->withFlash('Suksess, User Aksess telah dihapus.');
+
     }
 }
