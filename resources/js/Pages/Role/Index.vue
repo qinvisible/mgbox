@@ -5,7 +5,8 @@ import { router } from '@inertiajs/vue3';
 const props = defineProps({
     roles: Array,
     message: String,
-    flash: String
+    flash: String,
+    errors: Object
 });
 
 const removeModal = useModal((role) => {
@@ -21,14 +22,13 @@ const removeModal = useModal((role) => {
                 <h2 class="text-2xl py-5">Peran User Yang Tersedia</h2>
                 <a href="/role/create" class="btn btn-neutral btn-md mb-4">Tambah Peran</a>
                 <div v-if="props.flash"><span class="text-success"> {{ props.flash }} </span></div>
+                <div v-if="errors.roleused" class="text-error py-4">{{ errors.roleused }}</div>
                 <div class="h-100 pb-12">
-    
-                    <table class="table overflow-x-auto border table-zebra text-center text-sm font-light dark:border-neutral-500">
+                    <table class="table overflow-x-auto border table-zebra text-center text-sm font-light dark:border-neutral-500 table table-pin-rows">
                         <thead class="border-b font-medium dark:border-neutral-50">
-        
                             <tr>
-                                <th class="border-r px-6 py-4 dark:border-neutral-500">Nama</th>
-                                <th class="border-r px-6 py-4 dark:border-neutral-500">Aksess</th>
+                                <th class="border-r px-6 py-4 dark:border-neutral-500 text-lg font-medium">Nama</th>
+                                <th class="border-r px-6 py-4 dark:border-neutral-500 text-lg font-medium">Aksess</th>
                                 <th></th>
                             </tr>
                         </thead>

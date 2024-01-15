@@ -2,7 +2,7 @@
     <div class="ps relative flex flex-col items-center justify-center  overflow-hidden">
         <div class="container mx-auto">
             <perfect-scrollbar>
-                <div class="w-full p-6">
+                <div class="w-full p-12">
                     <h1 class="w-full text-3xl font-semibold text-left" v-if="!role.id">Tambah Akses Pengguna</h1>
                     <h1 class="w-full text-3xl font-semibold text-left" v-if="role.id">Update {{ role.name }}</h1>
                     <form @submit.prevent="submit(role.id)" class="w-full">
@@ -11,6 +11,7 @@
                             </div>
                             <div class="w-2/4">
                                 <span class="text-success" v-if="flash"> {{ flash }} </span>
+                                <span v-if="errors.message">{{  errors.message }}</span>
                             </div>
                         </div>
                         <div class="form-group flex w-full">

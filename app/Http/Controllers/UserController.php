@@ -18,9 +18,10 @@ class UserController extends Controller
     }
     public function index()
     {
+        Inertia::share('flash', session('flash', false));
         $users = $this->userRepo->index();
         return Inertia::render('User/Index', [
-            'user' => $users
+            'users' => $users
         ]);
     }
 
@@ -29,7 +30,7 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        // Inertia::share('flash', session('flash', false));
+        Inertia::share('flash', session('flash', false));
         $data = $this->userRepo->create($request);
         return Inertia::render('User/Form', [
             'user'  => $data['user'],
@@ -48,19 +49,16 @@ class UserController extends Controller
                 'name'      => 'required',
                 'email'     => 'required|unique:users,email',
                 'role_id'   => 'required',
-                'password'  => 'required'
+                'password'  => 'min:6',
+                'password_confirmation' => 'required_with:password|same:password|min:6'
+                                
             ]
         );
         if ($validator->fails()) {
-            return [
-                'status'   => 'fail',
-                'message'   => $validator->messages()
-            ];
-            if ($validator->fails()) {
-                return redirect(route('uz.create'))->withErrors($validator->messages())->withInput();
-            }
+            return redirect(route('user.create'))->withErrors($validator->messages())->withInput();
         }
-        $data  = $this->userRepo->store($request);
+        $user = $this->userRepo->store($request);
+        return redirect(route('user.index'))->withFlash('User Baru berhasil di tambahkan');
        
     }
 
@@ -77,7 +75,12 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        Inertia::share('flash', session('flash', false));
+        $data = $this->userRepo->edit($id);
+        return Inertia::render('User/Form', [
+            'user'  => $data['user'],
+            'roles'  => $data['roles']
+        ]);
     }
 
     /**
@@ -85,11 +88,8 @@ class UserController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        return $this->userRepo->update($request, $id);
-    }
-
-    public function updateRole(Request $request, int $id) {
-        return $this->userRepo->updateRole($request, $id);
+        $user = $this->userRepo->update($request, $id);
+        return redirect(route('user.edit', ['id' => $id]))->withFlash('User data berhasil di update')->withInput();
     }
 
     /**
@@ -97,6 +97,13 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = $this->userRepo->destroy($id);
+        if ($user['status']) {
+            return redirect(route('user.index'))->withFlash($user['message']);
+        } else {
+            return redirect()->back()->withErrors(['errors' => $user['message']]);
+            
+        }
+        
     }
 }

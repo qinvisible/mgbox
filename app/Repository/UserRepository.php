@@ -18,24 +18,20 @@ class UserRepository
      */
     public function index()
     {
-        $userq  = User::all();
-        $users  = [];
-        $roles  = $this->roleRepo->index();
+        $userq  = User::orderBy('created_at', 'desc')->get();
+        $data  = [];
         foreach ($userq as $key => $user) {
             $Urole = $user->role;
             $role = [
                 'name' => $Urole->name,
                 'permission' => explode(',', $Urole->permission)
             ];
-            array_push($users, [
-                'name' => $user->name,
+            array_push($data, [
+                'user' => $user,
                 'role' => $role
             ]);
         }
-        return [
-            'data' => $users,
-            'roles'=> $roles
-        ];
+        return $data;
     }
 
     /**
@@ -99,7 +95,11 @@ class UserRepository
      */
     public function edit(string $id)
     {
-        
+        $user = User::with('role')->find($id);
+        return [
+            'user'=>$user,
+            'roles'=> $this->roleRepo->index()
+        ];
     }
 
     /**
@@ -108,7 +108,7 @@ class UserRepository
     public function update($request, $id)
     {
         $user = User::find($id);
-        $user->update($request->only(['name']));
+        $user->update($request->only(['name', 'role_id']));
         return $user;
     }
 
@@ -127,6 +127,20 @@ class UserRepository
      */
     public function destroy(string $id)
     {
-        //
+        $user   = User::findOrFail($id);
+        $name   = $user->name;
+        try {
+            $user->destroy($id);
+            return [
+                'status'  => true,
+                'message' => "{$name} telah dihapus."
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'status'  => false,
+                'message' => $th
+            ];
+        }
+
     }
 }

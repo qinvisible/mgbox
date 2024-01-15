@@ -95,13 +95,13 @@ return [
     'password'             => 'Kata sandi salah.',
     'present'              => ':attribute wajib ada.',
     'regex'                => 'Format :attribute tidak valid.',
-    'required'             => ':attribute wajib diisi.',
-    'required_if'          => ':attribute wajib diisi bila :other adalah :value.',
-    'required_unless'      => ':attribute wajib diisi kecuali :other memiliki nilai :values.',
-    'required_with'        => ':attribute wajib diisi bila terdapat :values.',
-    'required_with_all'    => ':attribute wajib diisi bila terdapat :values.',
-    'required_without'     => ':attribute wajib diisi bila tidak terdapat :values.',
-    'required_without_all' => ':attribute wajib diisi bila sama sekali tidak terdapat :values.',
+    'required'             => ':attribute tidak boleh kosong.',
+    'required_if'          => ':attribute tidak boleh kosong bila :other adalah :value.',
+    'required_unless'      => ':attribute tidak boleh kosong kecuali :other memiliki nilai :values.',
+    'required_with'        => ':attribute tidak boleh kosong bila terdapat :values.',
+    'required_with_all'    => ':attribute tidak boleh kosong bila terdapat :values.',
+    'required_without'     => ':attribute tidak boleh kosong bila tidak terdapat :values.',
+    'required_without_all' => ':attribute tidak boleh kosong bila sama sekali tidak terdapat :values.',
     'same'                 => ':attribute dan :other harus sama.',
     'size'                 => [
         'numeric' => ':attribute harus berukuran :size.',
@@ -146,5 +146,11 @@ return [
     */
 
     'attributes' => [
-    ],
+        'role'          => 'Aksess User',
+        'name'          => 'Nama',
+        'permission'    => 'Aksess',
+        'password'      => 'Password',
+        'email'         => 'Email',
+        'password_confirmation' => 'Password Confirmation'
+    ],  
 ];

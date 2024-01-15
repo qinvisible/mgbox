@@ -3,7 +3,9 @@
 namespace  App\Repository;
 
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\Cast\Object_;
 use Request;
 
 class RoleRepository {
@@ -120,21 +122,28 @@ class RoleRepository {
     public function destroy(string $id)
     {
         $role   = Role::findOrFail($id);
-        $name   = '';
-        if ($role) {
-            $name   = $role->name;
+        $user   = User::where('role_id', $role->id)->count();
+    
+        if ($user) {
+            return [
+                'status' => false,
+                'errors' => 'Gagal menghapus, User Aksess digunakan.'
+            ];
+        }
+        $name   = $role->name;
+        try {
             $role->destroy($id);
             return [
-                'status'    => 'success',
-                'message'   => "Role {$name} telah dihapus."
+                'status' => true,
+                'message' => "User Aksess {$name} telah dihapus."
             ];
-        }
-        else {
+        } catch (\Throwable $th) {
             return [
-                'status'    => 'fail',
-                'message'   => "Role tidak ada."
+                'status' => false,
+                'message' => $th
             ];
         }
+       
     }
 
 }

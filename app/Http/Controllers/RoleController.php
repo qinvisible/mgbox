@@ -19,6 +19,7 @@ class RoleController extends Controller
      */
     public function index()
     {
+        Inertia::share('flash', session('flash', false));
         return  Inertia::render('Role/Index', [
             'roles' => $this->RoleRepo->index()
         ]);
@@ -105,8 +106,13 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->RoleRepo->destroy($id);
-        return redirect(route('role.index'))->withFlash('Suksess, User Aksess telah dihapus.');
-
+        $role  = $this->RoleRepo->destroy($id);
+        if ($role['status']) {
+            return redirect(route('role.index'))->withFlash('Suksess, User Aksess telah dihapus.');
+        } else {
+            $validator = Validator::make([Request::class], []);
+            $validator->getMessageBag()->add('roleused', $role['errors']);
+            return redirect(route('role.index'))->withErrors($validator->messages());
+        }
     }
 }
