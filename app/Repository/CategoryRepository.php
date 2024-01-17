@@ -17,7 +17,7 @@ class CategoryRepository
      */
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('created_at', 'desc')->get();
         $categoriesData = [];
         foreach ($categories as $cat) {
             $ids = array_map(function($i) {
@@ -51,9 +51,7 @@ class CategoryRepository
                 ];
         }
        
-        return [
-            'data' => $categoriesData
-        ];
+        return $categories;
     }
 
     /**
@@ -61,7 +59,10 @@ class CategoryRepository
      */
     public function create()
     {
-        //
+        return [
+            'name' => '',
+            'desc'  => ''
+        ];
     }
 
     /**
@@ -69,42 +70,25 @@ class CategoryRepository
      */
     public function store($request)
     {
-        $validators = Validator::make($request->all(), 
-        [
-            'name'          => 'required|unique:categories,name',
-            'desc'          => 'required'
-        ]);
-      
-        if ($validators->fails()) 
-        {
-            return [
-                'status' => 'fail',
-                'message'=> $validators->messages()
-            ];
-        } 
-        else 
-        {
+        try {
             $category = Category::create([
                 'name' => $request['name'],
                 'desc' => $request['desc']
             ]);
+
            
-            if ($category) 
-            {
-                return [
-                    'status'    => 'success',
-                    'messsage'  => "Kategori {$category->name} berhasil di tambahkan",
-                    'data'      => $category
-                ];
-            }
-            else 
-            {
-                return [
-                    'status'    => 'fail',
-                    'messsage'  => "Gagal menambahkan kategori"
-                ];
-            }
+            return [
+                'status'    => true,
+                'message'   => "Kategori {$category->name} berhasil di tambahkan",
+                'data'      => $category
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'status' => false,
+                'message'=> $th
+            ];
         }
+            
     }
 
     /**
@@ -112,29 +96,29 @@ class CategoryRepository
      */
     public function show($id)
     {
-        try {
-            $category   = Category::with('products')->find($id);
-            $productIds    = array_map(function($cat){
-                return $cat['product_id'];
-            }, $category->products->toArray());
-            $productRepo = new ProductRepository();
-            $products = $productRepo->getProducts($productIds);
-            return [
-                'status' => 'success',
-                'data'  => [
-                    'name'  => $category['name'],
-                    'desc'  => $category['desc'],
-                    'id'    => $category['id'],
-                    'products'  => $products
-                ]
-            ];
-        } catch (\Throwable $th) {
-            return $th;
-            return [
-                'status' => 'fail',
-                'message'=> 'Kategori produk tidak ditemukan'
-            ];
-        }
+        // try {
+        //     $category   = Category::with('products')->find($id);
+        //     $productIds    = array_map(function($cat){
+        //         return $cat['product_id'];
+        //     }, $category->products->toArray());
+        //     $productRepo = new ProductRepository();
+        //     $products = $productRepo->getProducts($productIds);
+        //     return [
+        //         'status' => 'success',
+        //         'data'  => [
+        //             'name'  => $category['name'],
+        //             'desc'  => $category['desc'],
+        //             'id'    => $category['id'],
+        //             'products'  => $products
+        //         ]
+        //     ];
+        // } catch (\Throwable $th) {
+        //     return $th;
+        //     return [
+        //         'status' => 'fail',
+        //         'message'=> 'Kategori produk tidak ditemukan'
+        //     ];
+        // }
         
         
     }
@@ -144,7 +128,8 @@ class CategoryRepository
      */
     public function edit(string $id)
     {
-        //
+        $category = Category::find($id);
+        return $category;
     }
 
     /**
@@ -156,12 +141,12 @@ class CategoryRepository
         if ($category) {
             $category->update($request->toArray());
             return [
-                'status'    =>'success',
+                'status'    => true,
                 'message'   => "{$category->name} berhasil di update."
             ];
         } else {
             return [
-                'status'    =>'fail',
+                'status'    => false,
                 'message'   => "Gagal update kategory produk."
             ];
         }
@@ -173,20 +158,18 @@ class CategoryRepository
      */
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
-        if ($category) {
+        $category = Category::find($id);
+        try {
             $name = $category->name;
             $category->destroy($id);
             return [
-                'status' => 'success',
+                'status' => true,
                 'message'=> "Kategory produk {$name} telah di hapus"
             ];
-        }
-        else 
-        {
+        } catch (\Throwable $th) {
             return [
-                'status' => 'fail',
-                'message'=> "Gagal menghspus kategori produk"
+                'status' => false,
+                'message' => "Gagal menghapus kategori"
             ];
         }
     }

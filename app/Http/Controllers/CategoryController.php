@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Repository\CategoryRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
@@ -16,7 +18,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return response($this->categoryRepo->index());
+        Inertia::share('flash', session('flash', false));
+        $categories = $this->categoryRepo->index();
+        return Inertia::render('Category/Index', [
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -24,7 +30,10 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        Inertia::share('flash', session('flash', false));
+        return Inertia::render('Category/Form', [
+            'category' => $this->categoryRepo->create()
+        ]);
     }
 
     /**
@@ -32,8 +41,24 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $categories = $this->categoryRepo->store($request);
-        return response($categories);
+        $validator  = Validator::make($request->all(), 
+            [
+                'name'  => 'required',
+                'desc'  => 'required'
+            ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages());
+        }
+        $category = $this->categoryRepo->store($request);
+        
+        if ($category['status']) {
+            return redirect(route('category.index'))->withFlash($category['message']);
+        }
+        else {
+            $validator->getMessageBag()->add('errors', 'Gagal menambahkan kategori');
+            return redirect()->back()->withErrors($validator->messages());
+        }
+        
     }
 
     /**
@@ -50,7 +75,10 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        Inertia::share('flash', session('flash', false));
+        return Inertia::render('Category/Form', [
+            'category' => $this->categoryRepo->edit($id)
+        ]);
     }
 
     /**
@@ -58,15 +86,33 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return response($this->categoryRepo->update($request, $id));
+        $validator = Validator::make($request->all(), [
+            'name'  => 'required',
+            'desc'  => 'required',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages());
+        }
+        $category = $this->categoryRepo->update($request, $id);
+        if ($category) {
+            return redirect()->back()->withFlash($category['message']);
+        }
+        $validator->getMessageBag()->add('errors', 'Gagal update kategori');
+        return redirect()->back()->withErrors($validator->messages());
+        
         
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(string $id)
     {
-        return response($this->categoryRepo->destroy($id));
+        $delete = $this->categoryRepo->destroy($id);
+        if ($delete['status']) {
+            return redirect(route('category.index'))->withFlash($delete['message']);
+        }
+        $validator = Validator::make([Request::class], []);
+        $validator->getMessageBag()->add('message', $delete['message']);
     }
 }

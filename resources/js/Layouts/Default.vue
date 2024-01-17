@@ -17,6 +17,7 @@ import { Link } from '@inertiajs/vue3'
                     <li><Link href="/">Home</Link></li>
                     <li><Link href="/role">User Aksess</Link></li>
                     <li><Link href="/user">User</Link></li>
+                    <li><Link href="/category">Kategori Produk</Link></li>
                 </ul>
             </div>
         </div>
