@@ -12,8 +12,10 @@ export default defineConfig({
         }),
     ],
     resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./resources/js', import.meta.url)),
-        },
+        alias: [
+            { find: '@', replacement: fileURLToPath(new URL('./resources/js', import.meta.url)) },
+            { find: '@css', replacement: fileURLToPath(new URL('./resources/css', import.meta.url)) },
+            { find: '@assets', replacement: fileURLToPath(new URL('./resources/assets', import.meta.url)) },
+        ]
     }
 });
