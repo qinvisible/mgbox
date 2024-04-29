@@ -1,23 +1,50 @@
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { Navbar } from '@/Components/Navbar';
+import { Sidebar } from '@/Components/Sidebar';
 </script>
 
 <template>
-    <div class="relative flex flex-row h-screen overflow-hidden">
-        <div class="drawer lg:drawer-open">
-            <input id="app-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="relative flex flex-col min-h-screen">
+        <Navbar title="MG-Box" />
 
-            <div class="drawer-content p-4">
-                <slot />
-            </div>
+        <div class="flex flex-1">
+            <Sidebar
+                :items="[
+                    {
+                        label: 'Dashboard',
+                        icon: 'mdi:view-dashboard',
+                        href: '/dashboard'
+                    },
+                    {
+                        label: 'Order Management',
+                        icon: 'mdi:cart',
+                        items: [
+                            { label: 'Orders', href: '/order' },
+                            { label: 'Payments', href: '/payment' },
+                            { label: 'Customers', href: '/customer' },
+                        ]
+                    },
+                    {
+                        label: 'Product Management',
+                        icon: 'mdi:package',
+                        items: [
+                            { label: 'Products', href: '/product' },
+                            { label: 'Categories', href: '/category' },
+                        ]
+                    },
+                    {
+                        label: 'Users & Roles',
+                        icon: 'mdi:user-supervisor',
+                        items: [
+                            { label: 'Users', href: '/user' },
+                            { label: 'Roles', href: '/role' },
+                        ]
+                    }
+                ]"
+            />
 
-            <div class="drawer-side">
-                <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                <ul class="menu p-4 w-48 min-h-full bg-base-200 text-base-content">
-                    <li><Link href="/">Home</Link></li>
-                    <li><Link href="/role">User Aksess</Link></li>
-                    <li><Link href="/user">User</Link></li>
-                </ul>
+            <div class="flex-1 bg-neutral-300">
+                <slot/>
             </div>
         </div>
     </div>
