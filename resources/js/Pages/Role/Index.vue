@@ -15,8 +15,8 @@ const removeModal = useModal((role) => {
  
 </script>
 
-<template >
-    <div class="relative ps flex  flex-col items-center justify-center" style="height: 100vh">
+<template>
+    <div class="relative ps flex  flex-col items-center justify-center px-8" style="height: 100vh">
         <perfect-scrollbar>
             <div class="container " style="height: 100vh;">
                 <h2 class="text-2xl py-5">Peran User Yang Tersedia</h2>

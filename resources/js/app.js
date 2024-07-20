@@ -1,9 +1,10 @@
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 import DefaultLayout from '@/Layouts/Default.vue'
-import PerfectScrollbar from 'vue3-perfect-scrollbar'
-import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'
+import { PerfectScrollbarPlugin }  from 'vue3-perfect-scrollbar';
+import 'vue3-perfect-scrollbar/style.css';
 
+const PerfectScrollbar = PerfectScrollbarPlugin;
 createInertiaApp({
   resolve: name => {
     const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })

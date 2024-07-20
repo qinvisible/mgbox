@@ -42,13 +42,11 @@ class CategoryRepository
                 ];
             }, $products->toArray());
             $categoriesData[] = [
-                [
-                    'name' => $cat['name'],
-                    'desc' => $cat['desc'],
-                    'id'   => $cat['id'],
-                    'products' => $products
-                ]
-                ];
+                'name' => $cat['name'],
+                'desc' => $cat['desc'],
+                'id'   => $cat['id'],
+                'products' => $products
+            ];
         }
        
         return [
@@ -59,9 +57,17 @@ class CategoryRepository
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($request )
     {
-        //
+        $name = $request['name'] ?? '';
+        $desc = $request['desc'] ?? '';
+        return [
+            'category' => [
+                'id'    => '',
+                'name'  => $name ,
+                'desc'  => $desc
+            ]
+        ];
     }
 
     /**
@@ -69,41 +75,25 @@ class CategoryRepository
      */
     public function store($request)
     {
-        $validators = Validator::make($request->all(), 
-        [
-            'name'          => 'required|unique:categories,name',
-            'desc'          => 'required'
+
+        $category = Category::create([
+            
+            'name' => $request['name'],
+            'desc' => $request['desc']
         ]);
-      
-        if ($validators->fails()) 
-        {
+
+
+        if ($category) {
             return [
-                'status' => 'fail',
-                'message'=> $validators->messages()
+                'status'    => 'success',
+                'messsage'  => "Kategori {$category->name} berhasil di tambahkan",
+                'data'      => $category
             ];
-        } 
-        else 
-        {
-            $category = Category::create([
-                'name' => $request['name'],
-                'desc' => $request['desc']
-            ]);
-           
-            if ($category) 
-            {
-                return [
-                    'status'    => 'success',
-                    'messsage'  => "Kategori {$category->name} berhasil di tambahkan",
-                    'data'      => $category
-                ];
-            }
-            else 
-            {
-                return [
-                    'status'    => 'fail',
-                    'messsage'  => "Gagal menambahkan kategori"
-                ];
-            }
+        } else {
+            return [
+                'status'    => 'fail',
+                'messsage'  => "Gagal menambahkan kategori"
+            ];
         }
     }
 
@@ -144,7 +134,17 @@ class CategoryRepository
      */
     public function edit(string $id)
     {
-        //
+        try {
+            $cat = Category::findOrFail($id);
+            return [
+                'name'  => $cat->name,
+                'desc'  => $cat->desc,
+                'id'    => $cat->id
+            ];
+
+        } catch (\Throwable $th) {
+            return $th;
+        }
     }
 
     /**

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Repository\CategoryRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
@@ -16,15 +18,21 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return response($this->categoryRepo->index());
+        return Inertia::render('Category/Index', [
+            'categories' => $this->categoryRepo->index()['data']
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        Inertia::share('flash', session('flash', false));
+        $category = $this->categoryRepo->create($request);
+        return Inertia::render('Category/Form', [
+            'category'  => $category,
+        ]);
     }
 
     /**
@@ -32,8 +40,21 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $categories = $this->categoryRepo->store($request);
-        return response($categories);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'      => 'required',
+                'desc'     => 'required',
+            ]
+                
+        );
+        if ($validator->fails()) {
+            return redirect(route('category.create'))->withErrors($validator->messages())->withInput();
+        }
+        else {
+            $this->categoryRepo->store($request);
+            return redirect(route('category.index'))->withFlash('Kategori Baru berhasil di tambahkan');
+        }
     }
 
     /**
@@ -41,8 +62,7 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $category = $this->categoryRepo->show($id);
-        return response($category);
+        
     }
 
     /**
@@ -50,7 +70,10 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $category = $this->categoryRepo->edit($id);
+        return Inertia::render('Category/Form', [
+            'category' => $category
+        ]);
     }
 
     /**
@@ -58,8 +81,20 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return response($this->categoryRepo->update($request, $id));
-        
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'      => 'required',
+                'desc'     => 'required',
+            ]
+
+        );
+        if ($validator->fails()) {
+            return redirect(route('category.create'))->withErrors($validator->messages())->withInput();
+        } else {
+            $update = $this->categoryRepo->update($request, $id);
+            return redirect(route('category.index'))->withFlash($update['message']);
+        }
     }
 
     /**
@@ -67,6 +102,7 @@ class CategoryController extends Controller
      */
     public function destroy(int $id)
     {
-        return response($this->categoryRepo->destroy($id));
+        $category = $this->categoryRepo->destroy($id);
+        return  redirect(route('category.index'))->withFlash($category['message']);
     }
 }

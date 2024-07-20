@@ -151,6 +151,7 @@ return [
         'permission'    => 'Aksess',
         'password'      => 'Password',
         'email'         => 'Email',
-        'password_confirmation' => 'Password Confirmation'
+        'password_confirmation' => 'Password Confirmation',
+        'desc'          => 'Deskripsi'
     ],  
 ];

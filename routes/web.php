@@ -46,20 +46,22 @@ Route::prefix('user')->group(function(){
 });
 
 Route::prefix('product')->group(function(){
-    Route::get('', [ProductController::class, 'index']);
-    Route::post('', [ProductController::class, 'store']);
-    Route::put('{id}', [ProductController::class, 'update']);
-    Route::get('/{id}', [ProductController::class, 'show']);
-    Route::delete('/{id}', [ProductController::class, 'destroy']);
-    Route::post('/add-category', [ProductController::class, 'addCategory']);
+    Route::get('', [ProductController::class, 'index'])->name('product.index');
+    Route::get('/create', [ProductController::class, 'create'])->name('product.create');
+    Route::post('', [ProductController::class, 'store'])->name('product.store');
+    Route::get('{id}', [ProductController::class, 'edit'])->name('product.edit');
+    Route::put('{id}', [ProductController::class, 'update'])->name('product.update');
+    Route::delete('{id}', [ProductController::class, 'destroy'])->name('product.destroy');;
+    Route::post('add-category', [ProductController::class, 'addCategory']);
 });
 
 Route::prefix('category')->group(function(){
-    Route::get('', [CategoryController::class, 'index']);
-    Route::post('', [CategoryController::class, 'store']);
-    Route::put('{id}', [CategoryController::class, 'update']);
-    Route::get('/{id}', [CategoryController::class, 'show']);
-    Route::delete('/{id}', [CategoryController::class, 'destroy']);
+    Route::get('', [CategoryController::class, 'index'])->name('category.index');
+    Route::put('/{id}', [CategoryController::class, 'update'])->name('category.update');
+    Route::get('/create', [CategoryController::class, 'create'])->name('category.create');
+    Route::post('', [CategoryController::class, 'store'])->name('category.store');
+    Route::get('/{id}', [CategoryController::class, 'edit'])->name('category.edit');
+    Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
 });
 
 

@@ -29,7 +29,7 @@
     <div class="ps relative flex flex-col items-center justify-center  overflow-hidden">
         <div class="container mx-auto p-10">
             <perfect-scrollbar>
-                <div class="w-full">
+                <div class="w-full p-12">
                         <h1 class="w-full text-3xl font-semibold text-left" v-if="!user.id">Tambah Pengguna</h1>
                         <h1 class="w-full text-3xl font-semibold text-left" v-if="user.id">Update {{ user.name }}</h1>
                 </div>

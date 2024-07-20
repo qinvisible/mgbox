@@ -24,6 +24,8 @@ return new class extends Migration
             $table->integer('item_number')->default(0);
             $table->integer('item_done')->default(0);
             $table->integer('item_remaining')->default(0);
+            $table->enum('status', ['done', 'failed', 'need_to_rev'])->default('done');
+            $table->text('need_to_rev_notes');
             $table->timestamp('target_date');
             $table->softDeletes('deleted_at');
             $table->timestamps();
