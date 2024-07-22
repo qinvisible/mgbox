@@ -16,8 +16,8 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
+    public function index(){
+        Inertia::share('flash', session('flash', false));
         return Inertia::render('Category/Index', [
             'categories' => $this->categoryRepo->index()['data']
         ]);
@@ -52,8 +52,8 @@ class CategoryController extends Controller
             return redirect(route('category.create'))->withErrors($validator->messages())->withInput();
         }
         else {
-            $this->categoryRepo->store($request);
-            return redirect(route('category.index'))->withFlash('Kategori Baru berhasil di tambahkan');
+            $category = $this->categoryRepo->store($request);
+            return redirect(route('category.index'))->withFlash($category['message']);
         }
     }
 
@@ -70,6 +70,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
+        Inertia::share('flash', session('flash', false));
         $category = $this->categoryRepo->edit($id);
         return Inertia::render('Category/Form', [
             'category' => $category
@@ -93,10 +94,10 @@ class CategoryController extends Controller
             return redirect(route('category.create'))->withErrors($validator->messages())->withInput();
         } else {
             $update = $this->categoryRepo->update($request, $id);
-            return redirect(route('category.index'))->withFlash($update['message']);
+            return redirect(route('category.edit', $id))->withFlash($update['message']);
+
         }
     }
-
     /**
      * Remove the specified resource from storage.
      */

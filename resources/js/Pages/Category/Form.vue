@@ -33,18 +33,17 @@
                     </h1>
                     <form @submit.prevent="submit(category.id)" class="w-full">
                         <div class="form-group flex align-center py-5">
-                                <div class="w-1/4">
-                                </div>
-                                <div class="w-2/4">
-                                    <span class="text-success" v-if="flash"> {{ flash }} </span>
-                                </div>
+                            <div class="w-1/4">
+                            </div>
+                            <div class="w-2/4">
+                                <span class="text-success" v-if="flash"> {{ flash }} </span>
+                            </div>
                         </div>
                         <div class="form-group flex align-center py-5">
                             <div class="w-1/4">
                             </div>
                             <div class="w-2/4">
-                                <span class="text-success" v-if="flash"> {{ flash }} </span>
-                                <span v-if="errors.message">{{ errors.message }}</span>
+                                <span class="text-error" v-if="errors.message">{{ errors.message }}</span>
                             </div>
                         </div>
                         <div class="form-group flex w-full pb-3">

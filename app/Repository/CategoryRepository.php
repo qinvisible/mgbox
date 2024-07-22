@@ -86,7 +86,7 @@ class CategoryRepository
         if ($category) {
             return [
                 'status'    => 'success',
-                'messsage'  => "Kategori {$category->name} berhasil di tambahkan",
+                'message'  => "Kategori {$category->name} berhasil di tambahkan",
                 'data'      => $category
             ];
         } else {
