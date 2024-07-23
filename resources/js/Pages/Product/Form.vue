@@ -1,6 +1,7 @@
 <script setup>
     
     import { router, useForm } from '@inertiajs/vue3';
+    import { defineProps } from 'vue';
 
     const props = defineProps({
         product: Object,
@@ -9,19 +10,18 @@
         errors: Object
     });
     let form  = useForm({
-        'id'          : props.product.data.id,
-        'name'        : props.product.data.name,
-        'desc'        : props.product.data.desc,
-        'price'       : props.product.data.price,
-        'width'       : props.product.data.width,
-        'height'      : props.product.data.height,
-        'length'      : props.product.data.length,
-        'thickness'   : props.product.data.thickness,
-        'amount'      : props.product.data.amount,
-        'location'    : props.product.data.location,
-        'category_id' : props.product.data.category_id
+        'id'          : props.product.id,
+        'name'        : props.product.name,
+        'desc'        : props.product.desc,
+        'price'       : props.product.price,
+        'width'       : props.product.width,
+        'height'      : props.product.height,
+        'length'      : props.product.length,
+        'thickness'   : props.product.thickness,
+        'amount'      : props.product.amount,
+        'location'    : props.product.location,
+        'category_id' : props.product.category_id
   });
-
 
   function submit(id = null) {
     if (id != null) {
@@ -37,9 +37,9 @@
         <div class="container mx-auto ">
             <perfect-scrollbar class="py-12">
                 <div class="w-full">
-                    <h1 class="w-full text-3xl font-semibold text-left" v-if="!product.data.id">Tambah Produk</h1>
-                    <h1 class="w-full text-3xl font-semibold text-left" v-if="product.data.id">Update {{
-                        product.data.name }}</h1>
+                    <h1 class="w-full text-3xl font-semibold text-left" v-if="!product.id">Tambah Produk</h1>
+                    <h1 class="w-full text-3xl font-semibold text-left" v-if="product.id">Update {{
+                        product.name }}</h1>
                 </div>
                 <div class="form-warp w-100 pb-10">
                     <form @submit.prevent=(submit(product.id))>
@@ -77,7 +77,7 @@
                                 <div class="text-error" v-if="errors.category_id" v-text="errors.category_id"></div>
                                 <select class="select w-full input-bordered" name="category_id"
                                     v-model="form.category_id">
-                                    <option v-for="cat in categories.data" :key="cat.id" :value="cat.id">{{ cat.name }}
+                                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}
                                     </option>
                                 </select>
                             </div>
@@ -150,9 +150,9 @@
                             <div class="w-1/4 sm-left"></div>
                             <div class="w-2/4 sm-left">
                                 <a href="/product" class="btn btn-md btn-secondary mr-5">KEMBALI</a>
-                                <input v-if="product.data.id" type="submit" value="SIMPAN"
+                                <input v-if="product.id" type="submit" value="SIMPAN"
                                     class="btn btn-md btn-primary mt-4">
-                                <input v-if="!product.data.id" type="submit" value="TAMBAH"
+                                <input v-if="!product.id" type="submit" value="TAMBAH"
                                     class="btn btn-md btn-primary mt-4">
                             </div>
                         </div>

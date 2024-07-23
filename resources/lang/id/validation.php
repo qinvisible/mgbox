@@ -152,6 +152,14 @@ return [
         'password'      => 'Password',
         'email'         => 'Email',
         'password_confirmation' => 'Password Confirmation',
-        'desc'          => 'Deskripsi'
+        'desc'          => 'Deskripsi',
+        'category_id'   => 'Kategori',
+        'location'      => 'Lokasi',
+        'price'         => 'Harga',
+        'height'        => 'Tinggi',
+        'length'        => 'Panjang',
+        'width'         => 'Lebar',
+        'thickness'     => 'Ketebalan',
+        'amount'        => 'Jumlah barang',
     ],  
 ];
