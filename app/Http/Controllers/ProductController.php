@@ -127,7 +127,10 @@ class ProductController extends Controller
      */
     public function destroy(int $id)
     {
-        return response($this->productRepo->destroy($id));
+        $destroy = $this->productRepo->destroy($id);
+        if ($destroy['status'] == 'success') {
+            return redirect(route('product.index'))->withFlash($destroy['message']);
+        }
     }
     public function addCategory(Request $request) {
         return $this->productRepo->addCategory(($request));

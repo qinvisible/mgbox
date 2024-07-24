@@ -64,8 +64,7 @@
                             <td class="ws-nw">{{ product.height }} mm</td>
                             <td class="ws-nw">{{ product.length }} mm</td>
                             <td class="ws-nw">{{ product.thickness }} mm</td>
-                            <td class="ws-nw mx-2 relative">
-                            </td>
+                            <td class="ws-nw mx-2 relative">{{ product.amount }}</td>
                             <td>{{ product.location }}</td>
                             <td>{{ product.category.name }}</td>
                             <td class="ws-nw">
@@ -96,6 +95,7 @@
                     :visible="removeModal.state.visible" :loading="removeModal.state.loading"
                     @confirm="removeModal.confirm" @close="removeModal.close" />
             </Teleport>
+            
 
         </div>
     </div>

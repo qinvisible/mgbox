@@ -75,11 +75,15 @@
                             <div class="w-1/4"><label for="role" class="prose prose-lg">Tipe Produk</label></div>
                             <div class="w-2/4">
                                 <div class="text-error" v-if="errors.category_id" v-text="errors.category_id"></div>
-                                <select class="select w-full input-bordered" name="category_id"
-                                    v-model="form.category_id">
-                                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}
-                                    </option>
-                                </select>
+                                <div class="cat-radio ">
+                                    <div class="radio-item items-center" v-for="category in categories"
+                                        :key="category.id">
+                                        <input type="radio" name="radio-4" class="radio radio-accent"
+                                            :value="category.id" :id="category.id" />
+                                        <label class="cursor-pointer pl-2" :for="category.id">{{ category.name
+                                            }}</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group flex align-center py-5">

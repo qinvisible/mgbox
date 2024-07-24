@@ -209,7 +209,6 @@ class ProductRepository {
     {
         $product = Product::findOrFail($id);
         if ($product) {
-            ;
             $name = $product->name;
             $product->destroy($id);
             return [
