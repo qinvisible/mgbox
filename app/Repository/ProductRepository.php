@@ -24,17 +24,32 @@ class ProductRepository {
         }
 
     }
-    public function index()
-    {   
-        $products = Product::all();
+    public function index($request)
+    {
+        $cat = $request->all();
+        $req = $cat['cat'] ?? null;
         return [
-            'data' => $this->getProducts()
+            'data' => $this->getProducts($req)
         ];
     }
 
-    public function getProducts($ids = null) {
-
-        $products = $ids ? Product::find($ids) :Product::all();
+    public function getProducts($req, $ids = null) {
+        if ($req) {
+            $productCat =  ProductCategory::when(['category_id' => $req])->get();
+            $products = [];
+            foreach ($productCat as $item) {
+                if ($item->category_id == $req) {
+                    array_push($products,  $item->product_id);
+                }
+            }
+            $ids = $products;
+            if ($ids) {
+                $products = Product::find($ids);
+            }
+        }
+        else {
+            $products = Product::all();
+        }
         $productdata = [];
         foreach ($products as  $prod) {
             $cat = null;
@@ -105,6 +120,7 @@ class ProductRepository {
             "amount"        => $request['amount'],
             "user_id"       => $request['user_id'],
             "location"      => $request['location'],
+            'category_id'   => $request['category_id']
         ]);
         if ($product) {
             ProductCategory::create(['category_id' => $request['category_id'], 'product_id' => $product->id]);
@@ -157,6 +173,7 @@ class ProductRepository {
                     'location' => $product['location'],
                     'height' => $product['height'],
                     'length' => $product['length'],
+                    'amount'    => $product['amount'],
                     'thickness' => $product['thickness'],
                     'category_id' => $cat->id
                         
@@ -186,18 +203,31 @@ class ProductRepository {
         else {
             try {
                 $product->update($request->only(['name','desc','price','width','height','length','thickness']));
+                $this->updateProducuctCat($id, $request['category_id']);
                 return [
                     'status' => 'success',
                     'message'=> "Produk {$request['name']} sudah diupdate."
                 ];
             } catch (\Throwable $th) {
-                dd($th);
                 return [
                     'status' => 'fail',
                     'message'=> "Produk gagal diupdate"
                 ];
             }
         }
+    }
+
+    private function updateProducuctCat($productID, $categoriID) {
+        try {
+            $productCat = Product::find($productID)->productCategory();
+            $productCat->update(['category_id' => $categoriID]);
+        } catch (\Throwable $th) {
+            return [
+                'status' => 'fail',
+                'message' => "Produk gagal diupdate"
+            ];
+        }
+        
     }
 
     

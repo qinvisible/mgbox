@@ -20,9 +20,9 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = $this->productRepo->index();
+        $products = $this->productRepo->index($request);
         return Inertia::render('Product/Index', [
             'products' => $products['data']
         ]);
@@ -114,7 +114,7 @@ class ProductController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return redirect(route('product.edit'))->withErrors($validator->messages())->withInput();
+            return redirect(route('product.edit', $id))->withErrors($validator->messages())->withInput();
         } else {
             $update = $this->productRepo->update($request, $id);
             return redirect(route('product.edit', $id))->withFlash($update['message']);

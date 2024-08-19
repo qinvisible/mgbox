@@ -25,6 +25,7 @@ const removeModal = useModal((category) => {
                             <th class="border-r px-6 py-4 dark:border-neutral-500 text-lg font-medium">Nama Kategori
                                 Produk
                             </th>
+                            <th class="border-r px-6 py-4 dark:border-neutral-500 text-lg font-medium">Produk</th>
                             <th class="border-r px-6 py-4 dark:border-neutral-500 text-lg font-medium">Keterangan</th>
                             <th></th>
                         </tr>
@@ -33,9 +34,13 @@ const removeModal = useModal((category) => {
                         <tr v-for="category in categories" :key="category.id"
                             class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600">
                             <td class="dark:border-neutral-500"><strong>{{ category.name }}</strong></td>
+                            <td class="dark:border-neutral-500">
+                                <a :href="'/product?cat=' + category.id" class="btn btn-neutral btn-md mb-4">Data
+                                    Produk</a>
+                            </td>
                             <td class="dark:border-neutral-500">{{ category.desc }}</td>
                             <td class="dark:border-neutral-500">
-                                <a :href="'/category/' + category.id" class="btn btn-primary btn-sm mr-3"
+                                <a :href="'/category/' +category.id" class="btn btn-primary btn-sm mr-3"
                                     title="Edit Peran">
                                     <svg st xmlns="http://www.w3.org/2000/svg"
                                         xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 576 512">
@@ -63,6 +68,6 @@ const removeModal = useModal((category) => {
                     :visible="removeModal.state.visible" :loading="removeModal.state.loading"
                     @confirm="removeModal.confirm" @close="removeModal.close" />
             </Teleport>
-    </div>
+        </div>
     </div>
 </template>

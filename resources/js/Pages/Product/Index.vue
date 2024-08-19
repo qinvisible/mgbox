@@ -95,7 +95,7 @@
                     :visible="removeModal.state.visible" :loading="removeModal.state.loading"
                     @confirm="removeModal.confirm" @close="removeModal.close" />
             </Teleport>
-            
+
 
         </div>
     </div>

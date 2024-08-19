@@ -25,6 +25,7 @@
 
   function submit(id = null) {
     if (id != null) {
+        console.log(form);
         router.put('/product/' + id, form);
     }
     else {
@@ -78,8 +79,9 @@
                                 <div class="cat-radio ">
                                     <div class="radio-item items-center" v-for="category in categories"
                                         :key="category.id">
-                                        <input type="radio" name="radio-4" class="radio radio-accent"
-                                            :value="category.id" :id="category.id" />
+                                        <input type="radio" v-model="form.category_id" :name="category.id"
+                                            :value="category.id" class="radio radio-accent" :id="category.id"
+                                            :checked="category.id == form.category_id" />
                                         <label class="cursor-pointer pl-2" :for="category.id">{{ category.name
                                             }}</label>
                                     </div>
