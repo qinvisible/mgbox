@@ -14,6 +14,7 @@ class CustomerRepository {
         $customers = Customer::all();
         $data =   array_map(function($customer){
             return [
+                'id'  =>   $customer['id'] ,
                 'name'  => $customer['name'] ,
                 'address'   => $customer['address'] ,
                 'phone'     => $customer['phone'] ,
@@ -29,9 +30,16 @@ class CustomerRepository {
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($request)
     {
-        //
+
+        return [
+            'name' => $request['name'] ?? '',
+            'address' => $request['address'] ?? '',
+            'email' => $request['email'] ?? '',
+            'phone' => $request['phone'] ?? '',
+        ];
+       
     }
 
     /**
@@ -39,18 +47,6 @@ class CustomerRepository {
      */
     public function store($request)
     {
-        $validator = Validator::make($request->all(),[
-            'name'      => 'required',
-            'address'   => 'required',
-            'phone'     => 'required',
-            'email'     => 'email'
-        ]);
-        if ($validator->fails()) {
-            return [
-                'status' => 'fail',
-                'message'=> $validator->messages()
-            ];
-        } else {
             $customer = Customer::create($request->all());
             if ($customer) {
                 return [
@@ -64,7 +60,6 @@ class CustomerRepository {
                 ];
             }
             
-        }
         
     }
 
@@ -81,7 +76,15 @@ class CustomerRepository {
      */
     public function edit(string $id)
     {
-        
+        $customer = Customer::findOrFail($id);
+        return [
+            'id'        => $customer->id,
+            'name'      => $customer->name,
+            'address'   => $customer->address,
+            'email'     => $customer->email,
+            'phone'     => $customer->phone,
+        ];
+
     }
 
     /**
@@ -95,25 +98,13 @@ class CustomerRepository {
                 'status' => 'fail'
             ];
         } else {
-            $validator = Validator::make($request->all(),[
-                'name'      => 'required',
-                'address'   => 'required',
-                'phone'     => 'required',
-                'email'     => 'email'
-            ]);
-            if ($validator->fails()) {
-                return [
-                    'status' => 'fail',
-                    'message'=> $validator->messages()
-                ];
-            } else {
-                $customer->update($request->toArray());
+            $customer->update($request->toArray());
+            if ($customer) {
                 return [
                     'status' => 'success',
                     'message'=> "Customer data {$customer['name']} berhasil di update"
                 ];
             }
-            
         }
         
     }
@@ -123,6 +114,21 @@ class CustomerRepository {
      */
     public function destroy(string $id)
     {
-        //
+        $customer = Customer::findOrFail($id);
+        if ($customer)
+        {
+            $name = $customer->name;
+            $customer->destroy($id);
+            return [
+                'status'    => 'success',
+                'message'   => "Kustomer dengan nama {$name} telah di hapus"
+            ];
+        } else {
+            return [
+                'status' => 'fail',
+                'message' => "Gagal menghapus Kostumer"
+            ];
+        }
+
     }
 }

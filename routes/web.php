@@ -66,11 +66,12 @@ Route::prefix('category')->group(function(){
 
 
 Route::prefix('customer')->group(function(){
-    Route::get('', [CustomerController::class, 'index']);
-    Route::post('', [CustomerController::class, 'store']);
-    Route::put('{id}', [CustomerController::class, 'update']);
-    Route::get('/{id}', [CustomerController::class, 'show']);
-    Route::delete('/{id}', [CustomerController::class, 'destroy']);
+    Route::get('', [CustomerController::class, 'index'])->name('customer.index');
+    Route::get('/create', [CustomerController::class, 'create'])->name('customer.create');
+    Route::post('', [CustomerController::class, 'store'])->name('customer.store');
+    Route::put('{id}', [CustomerController::class, 'update'])->name('customer.update');
+    Route::get('/{id}', [CustomerController::class, 'edit'])->name('customer.edit');
+    Route::delete('/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy');
 });
 
 Route::prefix('order')->group(function(){

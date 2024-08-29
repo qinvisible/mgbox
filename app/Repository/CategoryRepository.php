@@ -186,7 +186,7 @@ class CategoryRepository
         {
             return [
                 'status' => 'fail',
-                'message'=> "Gagal menghspus kategori produk"
+                'message'=> "Gagal menghapus kategori produk"
             ];
         }
     }

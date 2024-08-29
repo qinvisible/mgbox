@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Repository\CustomerRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
@@ -16,23 +18,48 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        return response($this->customerRepo->index());
+        Inertia::share('flash', session('flash', false));
+        return  Inertia::render('Customer/Index', [
+            'customers' => $this->customerRepo->index()['data']
+        ]);
+    
     }
 
     /**
-     * Show the form for creating a new resource.
+     * View Form create function
+     *
+     * @param Request $request
+     * @return void
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        Inertia::share('flash', session('flash', false));
+        $customer = $this->customerRepo->create($request);
+        return Inertia::render('Customer/Form', [
+            'customer' => $customer
+        ]);
     }
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        return response($this->customerRepo->store($request));
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'      => 'required',
+                'address'   => 'required',
+                'phone'     => 'required',
+                'email'     => 'email'
+            ]
+        );
+        if ($validator->fails()) {
+            return redirect(route('customer.create'))->withErrors($validator->messages())->withInput();
+        }
+        else {
+            $customer = $this->customerRepo->store($request);
+            return redirect(route('category.index'))->withFlash($customer['message']);
+        }
     }
 
     /**
@@ -48,7 +75,11 @@ class CustomerController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        Inertia::share('flash', session('flash', false));
+        $customer = $this->customerRepo->edit($id);
+        return Inertia::render('Customer/Form', [
+            'customer' => $customer
+        ]);
     }
 
     /**
@@ -56,7 +87,20 @@ class CustomerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return response($this->customerRepo->update($request, $id));
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'      => 'required',
+                'address'   => 'required',
+                'phone'     => 'required',
+                'email'     => 'email'
+            ]
+            );
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
+        $customer = $this->customerRepo->update($request, $id);
+        return redirect(route('customer.edit', ['id' => $id]))->withFlash($customer['message'])->withInput();
     }
 
     /**
@@ -64,6 +108,7 @@ class CustomerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $customer  = $this->customerRepo->destroy($id);
+        return  redirect(route('customer.index'))->withFlash($customer['message']);
     }
 }
